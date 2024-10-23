@@ -44,6 +44,7 @@ namespace WebBanHang.Areas.Admin.Controllers
 
         [Route("ThemSanPhamMoi")]
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public IActionResult ThemSanPhamMoi(TDanhMucSp sanPham)
         {
             if (ModelState.IsValid)
@@ -51,6 +52,32 @@ namespace WebBanHang.Areas.Admin.Controllers
                 context.TDanhMucSps.Add(sanPham);
                 context.SaveChanges();
                 return RedirectToAction("DanhMucSanPham");
+            }
+            return View(sanPham);
+        }
+
+        [Route("SuaSanPham")]
+        [HttpGet]
+        public IActionResult SuaSanPham(string maSanPham)
+        {
+            ViewBag.MaChatLieu = new SelectList(context.TChatLieus.ToList(), "MaChatLieu", "ChatLieu");
+            ViewBag.MaHangSx = new SelectList(context.THangSxes.ToList(), "MaHangSx", "HangSx");
+            ViewBag.MaNuocSx = new SelectList(context.TQuocGia.ToList(), "MaNuoc", "TenNuoc");
+            ViewBag.MaLoai = new SelectList(context.TLoaiSps.ToList(), "MaLoai", "Loai");
+            var sanPham = context.TDanhMucSps.Find(maSanPham);
+            return View(sanPham);
+        }
+
+        [Route("SuaSanPham")]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult SuaSanPham(TDanhMucSp sanPham)
+        {
+            if (ModelState.IsValid)
+            {
+                context.Entry(sanPham).State = EntityState.Modified;
+                context.SaveChanges();
+                return RedirectToAction("DanhMucSanPham", "HomeAdmin");
             }
             return View(sanPham);
         }
