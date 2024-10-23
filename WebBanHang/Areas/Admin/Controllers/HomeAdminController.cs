@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using WebBanHang.Models;
 using X.PagedList;
@@ -28,6 +29,30 @@ namespace WebBanHang.Areas.Admin.Controllers
             PagedList<TDanhMucSp> list = new PagedList<TDanhMucSp>(listSP, pageNumber, pageSize);
 
             return View(list);
+        }
+
+        [Route("ThemSanPhamMoi")]
+        [HttpGet]
+        public IActionResult ThemSanPhamMoi()
+        {
+            ViewBag.MaChatLieu = new SelectList(context.TChatLieus.ToList(), "MaChatLieu", "ChatLieu");
+            ViewBag.MaHangSx = new SelectList(context.THangSxes.ToList(), "MaHangSx", "HangSx");
+            ViewBag.MaNuocSx = new SelectList(context.TQuocGia.ToList(), "MaNuoc", "TenNuoc");
+            ViewBag.MaLoai = new SelectList(context.TLoaiSps.ToList(), "MaLoai", "Loai");
+            return View();
+        }
+
+        [Route("ThemSanPhamMoi")]
+        [HttpPost]
+        public IActionResult ThemSanPhamMoi(TDanhMucSp sanPham)
+        {
+            if (ModelState.IsValid)
+            {
+                context.TDanhMucSps.Add(sanPham);
+                context.SaveChanges();
+                return RedirectToAction("DanhMucSanPham");
+            }
+            return View(sanPham);
         }
     }
 }
