@@ -81,5 +81,27 @@ namespace WebBanHang.Areas.Admin.Controllers
             }
             return View(sanPham);
         }
+
+        [Route("XoaSanPham")]
+        [HttpGet]
+        public IActionResult XoaSanPham(string maSanPham)
+        {
+            TempData["Message"] = "";
+            var chiTietSanPham = context.TChiTietSanPhams.Where(x=>x.MaSp == maSanPham).ToList();
+            if(chiTietSanPham.Count >0)
+            {
+                TempData["Message"] = "Khong xoa duoc san pham nay";
+                return RedirectToAction("DanhMucSanPham", "HomeAdmin");
+            }
+            var anhSanPhams = context.TAnhSps.Where(x => x.MaSp == maSanPham);
+            if (anhSanPhams.Any())
+            {
+                context.RemoveRange(anhSanPhams);
+            }
+            context.Remove(context.TDanhMucSps.Find(maSanPham));
+            context.SaveChanges();
+            TempData["Message"] = "San pham da duoc xoa";
+            return RedirectToAction("DanhMucSanPham", "HomeAdmin");
+        }
     }
 }
