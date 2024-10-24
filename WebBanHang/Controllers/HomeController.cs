@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 using WebBanHang.Models;
+using WebBanHang.Models.Authentication;
 using WebBanHang.ViewModels;
 using X.PagedList;
 
@@ -16,6 +17,8 @@ namespace WebBanHang.Controllers
         {
             _logger = logger;
         }
+
+        [Authentication]
 
         public IActionResult Index(int? page)
         {
